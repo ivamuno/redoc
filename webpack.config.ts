@@ -53,6 +53,7 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
       path: require.resolve('path-browserify'),
       buffer: require.resolve('buffer'),
       http: false,
+      https: false,
       fs: path.resolve(__dirname, 'src/empty.js'),
       os: path.resolve(__dirname, 'src/empty.js'),
       tty: path.resolve(__dirname, 'src/empty.js'),

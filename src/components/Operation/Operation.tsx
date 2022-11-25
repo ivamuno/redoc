@@ -13,11 +13,14 @@ import { Extensions } from '../Fields/Extensions';
 import { Markdown } from '../Markdown/Markdown';
 import { OptionsContext } from '../OptionsProvider';
 import { Parameters } from '../Parameters/Parameters';
+import { ParameterBody } from '../Parameters/ParameterBody';
 import { RequestSamples } from '../RequestSamples/RequestSamples';
 import { ResponsesList } from '../Responses/ResponsesList';
 import { ResponseSamples } from '../ResponseSamples/ResponseSamples';
 import { SecurityRequirements } from '../SecurityRequirement/SecurityRequirement';
 import { SECTION_ATTR } from '../../services';
+import { PathBindings } from '../Bindings/PathBindings';
+import { OperationBindings } from '../Bindings/OperationBindings';
 
 const Description = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.unit * 6}px;
@@ -28,7 +31,15 @@ export interface OperationProps {
 }
 
 export const Operation = observer(({ operation }: OperationProps): JSX.Element => {
-  const { name: summary, description, deprecated, externalDocs, isWebhook, httpVerb } = operation;
+  const {
+    name: summary,
+    description,
+    deprecated,
+    externalDocs,
+    isWebhook,
+    httpVerb,
+    isAsync,
+  } = operation;
   const hasDescription = !!(description || externalDocs);
   const { showWebhookVerb } = React.useContext(OptionsContext);
   return (
@@ -46,7 +57,7 @@ export const Operation = observer(({ operation }: OperationProps): JSX.Element =
                 </Badge>
               )}
             </H2>
-            {options.pathInMiddlePanel && !isWebhook && (
+            {options.pathInMiddlePanel && !isWebhook && !isAsync && (
               <Endpoint operation={operation} inverted={true} />
             )}
             {hasDescription && (
@@ -57,7 +68,10 @@ export const Operation = observer(({ operation }: OperationProps): JSX.Element =
             )}
             <Extensions extensions={operation.extensions} />
             <SecurityRequirements securities={operation.security} />
-            <Parameters parameters={operation.parameters} body={operation.requestBody} />
+            <Parameters parameters={operation.parameters} />
+            <PathBindings bindings={operation.pathBindings} />
+            <OperationBindings bindings={operation.bindings} />
+            <ParameterBody body={operation.requestBody} />
             <ResponsesList responses={operation.responses} />
             <CallbacksList callbacks={operation.callbacks} />
           </MiddlePanel>

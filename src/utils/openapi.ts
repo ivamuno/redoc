@@ -58,6 +58,8 @@ const operationNames = {
   patch: true,
   delete: true,
   options: true,
+  pub: true,
+  sub: true,
   $ref: true,
 };
 

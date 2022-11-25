@@ -74,6 +74,7 @@ export type ExtendedOpenAPIOperation = {
   pathParameters: Array<Referenced<OpenAPIParameter>>;
   pathServers: Array<OpenAPIServer> | undefined;
   isWebhook: boolean;
+  pathBindings: Record<string, any>;
 } & OpenAPIOperation;
 
 export type TagsInfoMap = Record<string, TagInfo>;

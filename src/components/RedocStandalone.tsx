@@ -20,10 +20,14 @@ export interface RedocStandaloneProps {
 declare let __webpack_nonce__: string;
 
 export const RedocStandalone = function (props: RedocStandaloneProps) {
+  const errorBoundary = React.createRef<ErrorBoundary>();
   const { spec, specUrl, options = {}, onLoaded } = props;
   const hideLoading = argValueToBoolean(options.hideLoading, false);
 
   const normalizedOpts = new RedocNormalizedOptions(options);
+  if (errorBoundary.current?.state.error) {
+    errorBoundary.current?.setState({ error: undefined });
+  }
 
   if (normalizedOpts.nonce !== undefined) {
     try {
@@ -33,7 +37,7 @@ export const RedocStandalone = function (props: RedocStandaloneProps) {
   }
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary ref={errorBoundary}>
       <StoreBuilder
         spec={spec ? { ...spec } : undefined}
         specUrl={specUrl}

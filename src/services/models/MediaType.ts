@@ -59,6 +59,8 @@ export class MediaTypeModel {
     };
     if (this.schema && this.schema.oneOf) {
       this.examples = {};
+
+      let index = 0;
       for (const subSchema of this.schema.oneOf) {
         const sample = Sampler.sample(subSchema.rawSchema as any, samplerOptions, parser.spec);
 
@@ -66,14 +68,15 @@ export class MediaTypeModel {
           sample[this.schema.discriminatorProp] = subSchema.title;
         }
 
-        this.examples[subSchema.title] = new ExampleModel(
-          parser,
-          {
-            value: sample,
-          },
-          this.name,
-          info.encoding,
-        );
+        this.examples[subSchema.title === '' ? `Example ${index++}` : subSchema.title] =
+          new ExampleModel(
+            parser,
+            {
+              value: sample,
+            },
+            this.name,
+            info.encoding,
+          );
       }
     } else if (this.schema) {
       this.examples = {

@@ -1,16 +1,77 @@
 import { Omit } from './index';
 
 export interface OpenAPISpec {
-  openapi: string;
+  openapi?: string;
   info: OpenAPIInfo;
-  servers?: OpenAPIServer[];
-  paths: OpenAPIPaths;
+  servers?: OpenAPIServer[] | Record<string, OpenAPIServer>;
+  paths?: OpenAPIPaths;
   components?: OpenAPIComponents;
   security?: OpenAPISecurityRequirement[];
   tags?: OpenAPITag[];
   externalDocs?: OpenAPIExternalDocumentation;
   'x-webhooks'?: OpenAPIPaths;
   webhooks?: OpenAPIPaths;
+  asyncapi?: string;
+  id?: string;
+  channels?: AsyncChannelsObject;
+  defaultContentType?: string;
+}
+
+export type AsyncChannelsObject = Record<string, AsyncChannelObject>;
+export interface AsyncChannelObject {
+  description?: string;
+  subscribe?: AsyncOperationObject;
+  publish?: AsyncOperationObject;
+  parameters?: Record<string, OpenAPIParameter>;
+  bindings?: AsyncBindingsObject;
+}
+
+export interface AsyncOperationObject {
+  operationId?: string;
+  summary?: string;
+  description?: string;
+  tags?: OpenAPITag[];
+  externalDocs?: OpenAPIExternalDocumentation;
+  bindings?: AsyncBindingsObject;
+  traits?: Record<string, AsyncOperationTraitObject>;
+  message: Referenced<AsyncMessageObject>;
+}
+
+export type AsyncBindingsObject = Record<string, any>;
+
+export interface AsyncMessageObject extends AsyncMessageTraitObject {
+  payload?: Referenced<OpenAPISchema>;
+  traits?: AsyncMessageTraitObject;
+}
+
+export interface AsyncMessageTraitObject {
+  headers?: Referenced<OpenAPISchema>;
+  correlationId?: AsyncCorrelationObject;
+  schemaFormat?: string;
+  contentType?: string;
+  name?: string;
+  title?: string;
+  summary?: string;
+  description?: string;
+  tags?: OpenAPITag[];
+  externalDocs?: OpenAPIExternalDocumentation;
+  bindings?: AsyncBindingsObject;
+  examples?: { [name: string]: OpenAPIExample };
+  'x-codeSamples'?: OpenAPIXCodeSample[];
+}
+
+export interface AsyncCorrelationObject {
+  description?: string;
+  location: string;
+}
+
+export interface AsyncOperationTraitObject {
+  operationId?: string;
+  summary?: string;
+  description?: string;
+  tags?: OpenAPITag[];
+  externalDocs?: OpenAPIExternalDocumentation;
+  bindings?: AsyncBindingsObject;
 }
 
 export interface OpenAPIInfo {
@@ -28,6 +89,11 @@ export interface OpenAPIServer {
   url: string;
   description?: string;
   variables?: { [name: string]: OpenAPIServerVariable };
+  name?: string;
+  protocol?: string;
+  protocolVersion?: string;
+  security?: OpenAPISecurityRequirement[];
+  bindings?: AsyncBindingsObject;
 }
 
 export interface OpenAPIServerVariable {
@@ -62,6 +128,9 @@ export interface OpenAPIPath {
   servers?: OpenAPIServer[];
   parameters?: Array<Referenced<OpenAPIParameter>>;
   $ref?: string;
+  pub?: OpenAPIOperation;
+  sub?: OpenAPIOperation;
+  bindings?: AsyncBindingsObject;
 }
 
 export interface OpenAPIXCodeSample {
@@ -78,13 +147,14 @@ export interface OpenAPIOperation {
   operationId?: string;
   parameters?: Array<Referenced<OpenAPIParameter>>;
   requestBody?: Referenced<OpenAPIRequestBody>;
-  responses: OpenAPIResponses;
+  responses?: OpenAPIResponses;
   callbacks?: { [name: string]: Referenced<OpenAPICallback> };
   deprecated?: boolean;
   security?: OpenAPISecurityRequirement[];
   servers?: OpenAPIServer[];
   'x-codeSamples'?: OpenAPIXCodeSample[];
   'x-code-samples'?: OpenAPIXCodeSample[]; // deprecated
+  bindings?: AsyncBindingsObject;
 }
 
 export interface OpenAPIParameter {
@@ -103,6 +173,7 @@ export interface OpenAPIParameter {
   content?: { [media: string]: OpenAPIMediaType };
   encoding?: Record<string, OpenAPIEncoding>;
   const?: any;
+  location?: string;
 }
 
 export interface OpenAPIExample {
@@ -155,7 +226,7 @@ export interface OpenAPISchema {
   if?: OpenAPISchema;
   else?: OpenAPISchema;
   then?: OpenAPISchema;
-  examples?: any[];
+  examples?: any[] | { [name: string]: OpenAPIExample };
   const?: string;
   contentEncoding?: string;
   contentMediaType?: string;
@@ -174,6 +245,7 @@ export interface OpenAPIMediaType {
   example?: any;
   examples?: { [name: string]: Referenced<OpenAPIExample> };
   encoding?: { [field: string]: OpenAPIEncoding };
+  bindings?: AsyncBindingsObject;
 }
 
 export interface OpenAPIEncoding {
@@ -184,7 +256,7 @@ export interface OpenAPIEncoding {
   allowReserved: boolean;
 }
 
-export type OpenAPIParameterLocation = 'query' | 'header' | 'path' | 'cookie';
+export type OpenAPIParameterLocation = 'query' | 'header' | 'path' | 'cookie' | 'channel';
 export type OpenAPIParameterStyle =
   | 'matrix'
   | 'label'

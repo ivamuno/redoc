@@ -47,9 +47,11 @@ export default (env: { playground?: boolean; bench?: boolean } = {}, { mode }) =
     fallback: {
       path: require.resolve('path-browserify'),
       buffer: require.resolve('buffer'),
-      http: false,
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
       fs: false,
       os: false,
+      util: false,
     },
     alias:
       mode !== 'production'
@@ -102,6 +104,7 @@ export default (env: { playground?: boolean; bench?: boolean } = {}, { mode }) =
     new webpack.DefinePlugin({
       __REDOC_VERSION__: VERSION,
       __REDOC_REVISION__: REVISION,
+      browser: 'chrome',
       'process.env': '{}',
       'process.platform': '"browser"',
       'process.stdout': 'null',
@@ -117,6 +120,7 @@ export default (env: { playground?: boolean; bench?: boolean } = {}, { mode }) =
     }),
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser',
     }),
     new ForkTsCheckerWebpackPlugin({ logger: { infrastructure: 'silent', issues: 'console' } }),
     webpackIgnore(/js-yaml\/dumper\.js$/),

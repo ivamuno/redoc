@@ -123,7 +123,7 @@ export class SchemaModel {
     this.format = schema.format;
     this.enum = schema.enum || [];
     this.example = schema.example;
-    this.examples = schema.examples;
+    this.examples = schema.examples as any[];
     this.deprecated = !!schema.deprecated;
     this.pattern = schema.pattern;
     this.externalDocs = schema.externalDocs;

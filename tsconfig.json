@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "emitDeclarationOnly": true,
     "target": "es5",
     "noImplicitAny": false,
     "noUnusedParameters": true,

@@ -200,7 +200,7 @@ export class MenuBuilder {
     }
 
     if (spec.paths) {
-      getTags(parser, spec.paths);
+      getTags(parser, spec.paths || {});
     }
 
     function getTags(parser: OpenAPIParser, paths: OpenAPIPaths, isWebhook?: boolean) {
@@ -241,6 +241,7 @@ export class MenuBuilder {
               pathParameters: path.parameters || [],
               pathServers: path.servers,
               isWebhook: !!isWebhook,
+              pathBindings: path.bindings,
             });
           }
         }

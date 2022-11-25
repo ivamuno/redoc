@@ -80,6 +80,10 @@ export class OperationModel implements IMenuItem {
   isWebhook: boolean;
   isEvent: boolean;
 
+  isAsync: boolean;
+  pathBindings: Record<string, any>;
+  bindings: Record<string, any>;
+
   constructor(
     private parser: OpenAPIParser,
     private operationSpec: ExtendedOpenAPIOperation,
@@ -103,6 +107,9 @@ export class OperationModel implements IMenuItem {
     this.isCallback = isCallback;
     this.isWebhook = operationSpec.isWebhook;
     this.isEvent = this.isCallback || this.isWebhook;
+    this.isAsync = ['pub', 'sub'].includes(operationSpec.httpVerb);
+    this.pathBindings = operationSpec.pathBindings || {};
+    this.bindings = operationSpec.bindings || {};
 
     this.name = getOperationSummary(operationSpec);
 
@@ -120,8 +127,9 @@ export class OperationModel implements IMenuItem {
         security => new SecurityRequirementModel(security, parser),
       );
 
+      const operationSpecServers = operationSpec.servers as OpenAPIServer[];
       // TODO: update getting pathInfo for overriding servers on path level
-      this.servers = normalizeServers('', operationSpec.servers || operationSpec.pathServers || []);
+      this.servers = normalizeServers('', operationSpecServers || operationSpec.pathServers || []);
     } else {
       this.operationHash = operationSpec.operationId && 'operation/' + operationSpec.operationId;
       this.id =
@@ -135,9 +143,10 @@ export class OperationModel implements IMenuItem {
         security => new SecurityRequirementModel(security, parser),
       );
 
+      const operationSpecServers = operationSpec.servers as OpenAPIServer[];
       this.servers = normalizeServers(
         parser.specUrl,
-        operationSpec.servers || operationSpec.pathServers || parser.spec.servers || [],
+        operationSpecServers || operationSpec.pathServers || parser.spec.servers || [],
       );
     }
 
@@ -244,7 +253,8 @@ export class OperationModel implements IMenuItem {
   @memoize
   get responses() {
     let hasSuccessResponses = false;
-    return Object.keys(this.operationSpec.responses || [])
+    const reponses = this.operationSpec.responses || [];
+    return Object.keys(reponses)
       .filter(code => {
         if (code === 'default') {
           return true;
@@ -261,7 +271,7 @@ export class OperationModel implements IMenuItem {
           parser: this.parser,
           code,
           defaultAsError: hasSuccessResponses,
-          infoOrRef: this.operationSpec.responses[code],
+          infoOrRef: reponses[code],
           options: this.options,
           isEvent: this.isEvent,
         });

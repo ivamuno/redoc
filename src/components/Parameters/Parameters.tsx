@@ -1,16 +1,7 @@
 import * as React from 'react';
-import { DropdownOrLabel } from '../DropdownOrLabel/DropdownOrLabel';
 import { ParametersGroup } from './ParametersGroup';
 
-import { UnderlinedHeader } from '../../common-elements';
-
-import { MediaContentModel } from '../../services';
-import { FieldModel, RequestBodyModel } from '../../services/models';
-import { MediaTypesSwitch } from '../MediaTypeSwitch/MediaTypesSwitch';
-import { Schema } from '../Schema';
-
-import { Markdown } from '../Markdown/Markdown';
-import { ConstraintsView } from '../Fields/FieldContstraints';
+import { FieldModel } from '../../services/models';
 
 function safePush(obj, prop, item) {
   if (!obj[prop]) {
@@ -21,10 +12,9 @@ function safePush(obj, prop, item) {
 
 export interface ParametersProps {
   parameters?: FieldModel[];
-  body?: RequestBodyModel;
 }
 
-const PARAM_PLACES = ['path', 'query', 'cookie', 'header'];
+const PARAM_PLACES = ['path', 'query', 'cookie', 'header', 'channel'];
 
 export class Parameters extends React.PureComponent<ParametersProps> {
   orderParams(params: FieldModel[]): Record<string, FieldModel[]> {
@@ -36,8 +26,8 @@ export class Parameters extends React.PureComponent<ParametersProps> {
   }
 
   render() {
-    const { body, parameters = [] } = this.props;
-    if (body === undefined && parameters === undefined) {
+    const { parameters = [] } = this.props;
+    if (parameters === undefined) {
       return null;
     }
 
@@ -45,53 +35,12 @@ export class Parameters extends React.PureComponent<ParametersProps> {
 
     const paramsPlaces = parameters.length > 0 ? PARAM_PLACES : [];
 
-    const bodyContent = body && body.content;
-
-    const bodyDescription = body && body.description;
-
     return (
       <>
         {paramsPlaces.map(place => (
           <ParametersGroup key={place} place={place} parameters={paramsMap[place]} />
         ))}
-        {bodyContent && <BodyContent content={bodyContent} description={bodyDescription} />}
       </>
     );
   }
-}
-
-function DropdownWithinHeader(props) {
-  return (
-    <UnderlinedHeader key="header">
-      Request Body schema: <DropdownOrLabel {...props} />
-    </UnderlinedHeader>
-  );
-}
-
-export function BodyContent(props: {
-  content: MediaContentModel;
-  description?: string;
-}): JSX.Element {
-  const { content, description } = props;
-  const { isRequestType } = content;
-  return (
-    <MediaTypesSwitch content={content} renderDropdown={DropdownWithinHeader}>
-      {({ schema }) => {
-        return (
-          <>
-            {description !== undefined && <Markdown source={description} />}
-            {schema?.type === 'object' && (
-              <ConstraintsView constraints={schema?.constraints || []} />
-            )}
-            <Schema
-              skipReadOnly={isRequestType}
-              skipWriteOnly={!isRequestType}
-              key="schema"
-              schema={schema}
-            />
-          </>
-        );
-      }}
-    </MediaTypesSwitch>
-  );
 }

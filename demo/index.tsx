@@ -5,10 +5,12 @@ import { RedocStandalone } from '../src';
 import ComboBox from './ComboBox';
 import FileInput from './components/FileInput';
 
-const DEFAULT_SPEC = 'openapi.yaml';
+const DEFAULT_SPEC = 'asyncapi.yaml';
 const NEW_VERSION_SPEC = 'openapi-3-1.yaml';
+const ASYNC_API_SPEC = 'asyncapi.yaml';
 
 const demos = [
+  { value: ASYNC_API_SPEC, label: 'AsyncAPI' },
   { value: NEW_VERSION_SPEC, label: 'Petstore OpenAPI 3.1' },
   { value: 'https://api.apis.guru/v2/specs/instagram.com/1.0.0/swagger.yaml', label: 'Instagram' },
   {
@@ -55,7 +57,7 @@ class DemoApp extends React.Component<
   };
 
   handleChange = (url: string) => {
-    if (url === NEW_VERSION_SPEC) {
+    if ([NEW_VERSION_SPEC, ASYNC_API_SPEC].includes(url)) {
       this.setState({ cors: false });
       0;
     }
