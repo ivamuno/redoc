@@ -1,6 +1,6 @@
 {
   "name": "redoc-asyncapi",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "ReDoc for AsyncAPI",
   "repository": {
     "type": "git",
@@ -141,6 +141,7 @@
     "styled-components": "^4.1.1 || ^5.1.1"
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^11.7.0",
     "@redocly/openapi-core": "^1.0.0-beta.104",
     "classnames": "^2.3.1",
     "decko": "^1.2.0",
@@ -148,7 +149,6 @@
     "eventemitter3": "^4.0.7",
     "https-browserify": "^1.0.0",
     "json-pointer": "^0.6.2",
-    "json-schema-ref-parser": "^9.0.9",
     "lunr": "^2.3.9",
     "mark.js": "^8.11.1",
     "marked": "^4.0.15",
@@ -166,6 +166,7 @@
     "stream-http": "^3.2.0",
     "style-loader": "^3.3.1",
     "swagger2openapi": "^7.0.6",
+    "update-notifier": "^5.0.1",
     "url-template": "^2.0.8",
     "util": "^0.12.5"
   },

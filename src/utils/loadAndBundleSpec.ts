@@ -29,13 +29,12 @@ import {
   Referenced,
 } from '../types';
 import { IS_BROWSER } from './dom';
-import * as JsonSchemaRefParser from 'json-schema-ref-parser';
+import * as JsonSchemaRefParser from '@apidevtools/json-schema-ref-parser';
 
 export async function loadAndBundleSpec(specUrlOrObject: object | string): Promise<OpenAPISpec> {
   let spec;
   try {
-    const parser = new JsonSchemaRefParser();
-    spec = (await parser.bundle(specUrlOrObject, {
+    spec = (await JsonSchemaRefParser.bundle(specUrlOrObject, {
       resolve: { http: { withCredentials: false } },
     } as object)) as any;
 
