@@ -57,6 +57,7 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
       fs: path.resolve(__dirname, 'src/empty.js'),
       os: path.resolve(__dirname, 'src/empty.js'),
       tty: path.resolve(__dirname, 'src/empty.js'),
+      url: require.resolve('url/'),
     },
   },
   performance: false,
@@ -84,7 +85,6 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
         test: /\.(tsx?|[cm]?js)$/,
         loader: 'esbuild-loader',
         options: {
-          loader: 'tsx',
           target: 'es2015',
           tsconfigRaw: require('./tsconfig.json'),
         },
@@ -98,7 +98,6 @@ export default (env: { standalone?: boolean; browser?: boolean } = {}) => ({
           {
             loader: 'esbuild-loader',
             options: {
-              loader: 'css',
               minify: true,
             },
           },

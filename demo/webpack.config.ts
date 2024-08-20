@@ -14,7 +14,7 @@ function root(filename) {
   return resolve(__dirname + '/' + filename);
 }
 
-export default (env: { playground?: boolean; bench?: boolean } = {}, { mode }) => ({
+export default (env: { playground?: boolean; bench?: boolean } = {}) => ({
   entry: [
     root('../src/polyfills.ts'),
     root(
@@ -53,12 +53,6 @@ export default (env: { playground?: boolean; bench?: boolean } = {}, { mode }) =
       os: false,
       util: false,
     },
-    alias:
-      mode !== 'production'
-        ? {
-            'react-dom': '@hot-loader/react-dom',
-          }
-        : {},
   },
 
   performance: false,
@@ -78,7 +72,6 @@ export default (env: { playground?: boolean; bench?: boolean } = {}, { mode }) =
         test: /\.(tsx?|[cm]?js)$/,
         loader: 'esbuild-loader',
         options: {
-          loader: 'tsx',
           target: 'es2015',
           tsconfigRaw: require('../tsconfig.json'),
         },
@@ -92,7 +85,6 @@ export default (env: { playground?: boolean; bench?: boolean } = {}, { mode }) =
           {
             loader: 'esbuild-loader',
             options: {
-              loader: 'css',
               minify: true,
             },
           },

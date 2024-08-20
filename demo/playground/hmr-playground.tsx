@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import type { RedocRawOptions } from '../../src/services/RedocNormalizedOptions';
-import RedocStandalone from './hot';
+import { RedocStandalone } from '../../src';
 
 const big = window.location.search.indexOf('big') > -1;
 const swagger = window.location.search.indexOf('swagger') > -1;

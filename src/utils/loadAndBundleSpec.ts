@@ -29,23 +29,8 @@ import {
   Referenced,
 } from '../types';
 import { IS_BROWSER } from './dom';
-import * as JsonSchemaRefParser from '@apidevtools/json-schema-ref-parser';
 
 export async function loadAndBundleSpec(specUrlOrObject: object | string): Promise<OpenAPISpec> {
-  let spec;
-  try {
-    spec = (await JsonSchemaRefParser.bundle(specUrlOrObject, {
-      resolve: { http: { withCredentials: false } },
-    } as object)) as any;
-
-    if (spec.asyncapi) {
-      spec.swagger = '2.0';
-      specUrlOrObject = spec;
-    }
-  } catch (error) {
-    console.error('loadAndBundleSpec.error', error);
-  }
-
   const config = new Config({} as ResolvedConfig);
   const bundleOpts = {
     config,
@@ -69,7 +54,7 @@ export async function loadAndBundleSpec(specUrlOrObject: object | string): Promi
     bundle: { parsed },
   } = await bundle(bundleOpts);
   if (parsed.asyncapi !== undefined) {
-    return convertAsyncAPI2OpenAPI(new OpenAPIParser(spec as OpenAPISpec), spec);
+    return convertAsyncAPI2OpenAPI(new OpenAPIParser(parsed), parsed);
   }
 
   return parsed.swagger !== undefined ? convertSwagger2OpenAPI(parsed) : parsed;
@@ -129,7 +114,6 @@ function convertAsyncAPI2OpenAPI(parser: OpenAPIParser, spec: OpenAPISpec): Prom
       return reject(err);
     }
 
-    console.log('spec', spec);
     resolve(spec);
   });
 }
@@ -217,7 +201,6 @@ function convertAsyncAPIOperation2OpenAPIOperation(
 
   const payloadRef = asyncOpMessage.payload?.$ref;
   const payloadBody = asyncOpMessage.payload as OpenAPISchema;
-  console.log('asyncOp', asyncOp);
   let schema: Referenced<OpenAPISchema> = payloadBody;
   if (payloadRef) {
     schema = { $ref: payloadRef };
@@ -264,7 +247,6 @@ function convertAsyncAPIOperation2OpenAPIOperation(
     //TODO: Pending to map traits.
     requestBody: requestBody,
   };
-  console.log('openAPIOp', openAPIOp);
 
   return openAPIOp;
 }
