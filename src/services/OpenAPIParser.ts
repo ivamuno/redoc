@@ -33,7 +33,7 @@ export class OpenAPIParser {
     this.validate(spec);
 
     this.spec = spec;
-    this.allowMergeRefs = spec.openapi !== undefined && spec.openapi!.startsWith('3.1');
+    this.allowMergeRefs = spec.openapi?.startsWith('3.1') || false;
 
     const href = IS_BROWSER ? window.location.href : '';
     if (typeof specUrl === 'string') {

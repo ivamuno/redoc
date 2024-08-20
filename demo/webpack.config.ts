@@ -47,11 +47,9 @@ export default (env: { playground?: boolean; bench?: boolean } = {}) => ({
     fallback: {
       path: require.resolve('path-browserify'),
       buffer: require.resolve('buffer'),
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
+      http: false,
       fs: false,
       os: false,
-      util: false,
     },
   },
 
@@ -96,7 +94,6 @@ export default (env: { playground?: boolean; bench?: boolean } = {}) => ({
     new webpack.DefinePlugin({
       __REDOC_VERSION__: VERSION,
       __REDOC_REVISION__: REVISION,
-      browser: 'chrome',
       'process.env': '{}',
       'process.platform': '"browser"',
       'process.stdout': 'null',
@@ -112,7 +109,6 @@ export default (env: { playground?: boolean; bench?: boolean } = {}) => ({
     }),
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
-      process: 'process/browser',
     }),
     new ForkTsCheckerWebpackPlugin({ logger: { infrastructure: 'silent', issues: 'console' } }),
     webpackIgnore(/js-yaml\/dumper\.js$/),
