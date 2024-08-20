@@ -1,4 +1,4 @@
-import { default as classnames } from 'classnames';
+import * as classnames from 'classnames';
 import { darken } from 'polished';
 
 import { deprecatedCss, ShelfIcon } from '../../common-elements';
@@ -26,27 +26,27 @@ export const OperationBadge = styled.span.attrs((props: { type: string }) => ({
   margin-top: 2px;
 
   &.get {
-    background-color: ${props => props.theme.colors.http.get};
+    background-color: ${({ theme }) => theme.colors.http.get};
   }
 
   &.post {
-    background-color: ${props => props.theme.colors.http.post};
+    background-color: ${({ theme }) => theme.colors.http.post};
   }
 
   &.put {
-    background-color: ${props => props.theme.colors.http.put};
+    background-color: ${({ theme }) => theme.colors.http.put};
   }
 
   &.options {
-    background-color: ${props => props.theme.colors.http.options};
+    background-color: ${({ theme }) => theme.colors.http.options};
   }
 
   &.patch {
-    background-color: ${props => props.theme.colors.http.patch};
+    background-color: ${({ theme }) => theme.colors.http.patch};
   }
 
   &.delete {
-    background-color: ${props => props.theme.colors.http.delete};
+    background-color: ${({ theme }) => theme.colors.http.delete};
   }
 
   &.pub {
@@ -58,19 +58,23 @@ export const OperationBadge = styled.span.attrs((props: { type: string }) => ({
   }
 
   &.basic {
-    background-color: ${props => props.theme.colors.http.basic};
+    background-color: ${({ theme }) => theme.colors.http.basic};
   }
 
   &.link {
-    background-color: ${props => props.theme.colors.http.link};
+    background-color: ${({ theme }) => theme.colors.http.link};
   }
 
   &.head {
-    background-color: ${props => props.theme.colors.http.head};
+    background-color: ${({ theme }) => theme.colors.http.head};
   }
 
   &.hook {
-    background-color: ${props => props.theme.colors.primary.main};
+    background-color: ${({ theme }) => theme.colors.primary.main};
+  }
+
+  &.schema {
+    background-color: ${({ theme }) => theme.colors.http.basic};
   }
 `;
 
@@ -88,7 +92,7 @@ function menuItemActive(
   }
 }
 
-export const MenuItemUl = styled.ul<{ expanded: boolean }>`
+export const MenuItemUl = styled.ul<{ $expanded: boolean }>`
   margin: 0;
   padding: 0;
 
@@ -100,7 +104,7 @@ export const MenuItemUl = styled.ul<{ expanded: boolean }>`
     font-size: 0.929em;
   }
 
-  ${props => (props.expanded ? '' : 'display: none;')};
+  ${props => (props.$expanded ? '' : 'display: none;')};
 `;
 
 export const MenuItemLi = styled.li<{ depth: number }>`
@@ -126,41 +130,40 @@ export const menuItemDepth = {
 };
 
 export interface MenuItemLabelType {
-  depth: number;
-  active: boolean;
-  deprecated?: boolean;
-  type?: string;
+  $depth: number;
+  $active: boolean;
+  $deprecated?: boolean;
+  $type?: string;
 }
 
 export const MenuItemLabel = styled.label.attrs((props: MenuItemLabelType) => ({
-  role: 'menuitem',
-  className: classnames('-depth' + props.depth, {
-    active: props.active,
+  className: classnames('-depth' + props.$depth, {
+    active: props.$active,
   }),
 }))<MenuItemLabelType>`
   cursor: pointer;
   color: ${props =>
-    props.active
-      ? menuItemActive(props.depth, props, 'activeTextColor')
+    props.$active
+      ? menuItemActive(props.$depth, props, 'activeTextColor')
       : props.theme.sidebar.textColor};
   margin: 0;
   padding: 12.5px ${props => props.theme.spacing.unit * 4}px;
-  ${({ depth, type, theme }) =>
-    (type === 'section' && depth > 1 && 'padding-left: ' + theme.spacing.unit * 8 + 'px;') || ''}
+  ${({ $depth, $type, theme }) =>
+    ($type === 'section' && $depth > 1 && 'padding-left: ' + theme.spacing.unit * 8 + 'px;') || ''}
   display: flex;
   justify-content: space-between;
   font-family: ${props => props.theme.typography.headings.fontFamily};
-  ${props => menuItemDepth[props.depth]};
+  ${props => menuItemDepth[props.$depth]};
   background-color: ${props =>
-    props.active
-      ? menuItemActive(props.depth, props, 'activeBackgroundColor')
+    props.$active
+      ? menuItemActive(props.$depth, props, 'activeBackgroundColor')
       : props.theme.sidebar.backgroundColor};
 
-  ${props => (props.deprecated && deprecatedCss) || ''};
+  ${props => (props.$deprecated && deprecatedCss) || ''};
 
   &:hover {
-    color: ${props => menuItemActive(props.depth, props, 'activeTextColor')};
-    background-color: ${props => menuItemActive(props.depth, props, 'activeBackgroundColor')};
+    color: ${props => menuItemActive(props.$depth, props, 'activeTextColor')};
+    background-color: ${props => menuItemActive(props.$depth, props, 'activeBackgroundColor')};
   }
 
   ${ShelfIcon} {
